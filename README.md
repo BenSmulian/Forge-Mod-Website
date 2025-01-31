@@ -19,7 +19,7 @@ We are seeking contributors who can:
 
 ## 💰 Compensation & Learning Opportunity
 
-We are offering **$100** or an opportunity to learn something valuable from me in exchange for writing documentation and demonstrating your workflow.
+We are offering payment and an opportunity to learn something valuable from me in exchange for writing documentation and demonstrating your workflow.
 
 ## 🛠️ How to Contribute
 
