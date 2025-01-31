@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Modding 1.20.1 - Creating Custom Tools and Weapons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Modding 1.20.1 - Creating Custom Tools and Weapons</h1>
+
+    <h2>Introduction</h2>
+    <p>In this section, we will guide you through creating custom tools and weapons in your Minecraft mod for version 1.20.1. Custom tools can have unique behaviors, such as special abilities or increased durability, while custom weapons can have custom attack power and effects. This is an exciting step in making your mod truly unique!</p>
+
+    <h2>Creating a Custom Tool</h2>
+
+    <h3>1. Defining the Tool Item</h3>
+    <p>First, let’s create a custom tool. For this example, we will create a custom pickaxe. To do so, we need to define its properties such as its attack damage, durability, and mining speed. You will also need to register your custom tool in the mod’s main class.</p>
+
+    <p>Here's the code for defining a custom pickaxe item:</p>
+    <pre><code>package com.example.mymod.items;
+
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
+
+public class CustomPickaxeItem extends PickaxeItem {
+    
+    public CustomPickaxeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+        super(material, attackDamage, attackSpeed, settings);
+    }
+
+    // Register the custom pickaxe item
+    public static final Item CUSTOM_PICKAXE = new CustomPickaxeItem(CustomToolMaterials.CUSTOM_MATERIAL, 5, -2.8f, new Item.Settings().group(ItemGroup.TOOLS));
+
+    // Register the item
+    public static void register() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_pickaxe"), CUSTOM_PICKAXE);
+    }
+}
+    </code></pre>
+    <p>In this example:</p>
+    <ul>
+        <li><code>CustomPickaxeItem</code> extends <code>PickaxeItem</code>, allowing us to customize the behavior of the pickaxe, including its attack damage and speed.</li>
+        <li><code>CustomToolMaterials.CUSTOM_MATERIAL</code> is a custom tool material we define (more on this below).</li>
+        <li><code>ItemGroup.TOOLS</code> places the pickaxe in the Tools tab of the creative inventory.</li>
+    </ul>
+
+    <h3>2. Defining Custom Tool Material</h3>
+    <p>Next, we need to define a custom tool material for our pickaxe. Tool materials determine the attributes of tools such as mining speed, attack damage, and durability. Let's create our custom material.</p>
+    <pre><code>package com.example.mymod.items;
+
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Ingredient;
+
+public class CustomToolMaterials implements ToolMaterial {
+
+    public static final ToolMaterial CUSTOM_MATERIAL = new CustomToolMaterials();
+
+    @Override
+    public int getDurability() {
+        return 2000; // High durability
+    }
+
+    @Override
+    public float getMiningSpeedMultiplier() {
+        return 8.0f; // Fast mining speed
+    }
+
+    @Override
+    public float getAttackDamage() {
+        return 6.0f; // High attack damage
+    }
+
+    @Override
+    public int getMiningLevel() {
+        return 3; // Comparable to diamond
+    }
+
+    @Override
+    public Ingredient getRepairIngredient() {
+        return Ingredient.ofItems(Items.DIAMOND); // Repairs with diamonds
+    }
+}
+    </code></pre>
+    <p>In this example, <code>CUSTOM_MATERIAL</code> has high durability, fast mining speed, and a decent attack damage. You can adjust these values as per your mod’s needs.</p>
+
+    <h3>3. Registering the Tool</h3>
+    <p>We already registered the custom pickaxe in the main class above. To finalize the registration, call the <code>CustomPickaxeItem.register()</code> method inside your mod’s <code>onInitialize()</code> method to ensure it is properly registered when the mod loads.</p>
+    <pre><code>public class MyMod implements ModInitializer {
+
+    @Override
+    public void onInitialize() {
+        // Register the custom pickaxe
+        CustomPickaxeItem.register();
+        System.out.println("Custom Pickaxe Registered!");
+    }
+}
+    </code></pre>
+
+    <h2>Creating a Custom Weapon</h2>
+
+    <h3>1. Defining the Weapon Item</h3>
+    <p>Now let’s create a custom weapon. We will create a custom sword with unique attack power and special effects. The code for a basic custom sword is as follows:</p>
+    <pre><code>package com.example.mymod.items;
+
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
+
+public class CustomSwordItem extends SwordItem {
+
+    public CustomSwordItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+        super(material, attackDamage, attackSpeed, settings);
+    }
+
+    // Register the custom sword item
+    public static final Item CUSTOM_SWORD = new CustomSwordItem(CustomToolMaterials.CUSTOM_MATERIAL, 8, -2.4f, new Item.Settings().group(ItemGroup.COMBAT));
+
+    // Register the item
+    public static void register() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_sword"), CUSTOM_SWORD);
+    }
+}
+    </code></pre>
+
+    <p>In this example:</p>
+    <ul>
+        <li><code>CustomSwordItem</code> extends <code>SwordItem</code> to create a custom weapon with unique attributes, such as attack damage and speed.</li>
+        <li><code>CustomToolMaterials.CUSTOM_MATERIAL</code> is used as the material for the sword, just like with the pickaxe.</li>
+        <li><code>ItemGroup.COMBAT</code> places the sword in the Combat tab of the creative inventory.</li>
+    </ul>
+
+    <h3>2. Registering the Weapon</h3>
+    <p>As with the custom pickaxe, register the sword by calling the <code>CustomSwordItem.register()</code> method in your mod’s <code>onInitialize()</code> method:</p>
+    <pre><code>public class MyMod implements ModInitializer {
+
+    @Override
+    public void onInitialize() {
+        // Register the custom sword
+        CustomSwordItem.register();
+        System.out.println("Custom Sword Registered!");
+    }
+}
+    </code></pre>
+
+    <h2>Next Steps</h2>
+    <p>Now that you’ve created custom tools and weapons, you can further enhance their functionality by adding special effects or abilities. For example, you can create a custom effect that applies when the player uses the sword, or make a pickaxe that can break multiple blocks at once. In the next section, we’ll explore adding enchantments and special abilities to custom items!</p>
+
+</body>
+</html>

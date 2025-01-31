@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Modding 1.20.1 - Custom Enchantments and Effects</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Modding 1.20.1 - Custom Enchantments and Effects</h1>
+
+    <h2>Introduction</h2>
+    <p>Enchantments are an essential part of Minecraft gameplay, adding unique abilities to items. In this guide, we will cover how to create custom enchantments for your mod, apply them to items, and create special effects that activate under specific conditions. By the end, you will be able to create items that possess custom abilities or unique effects based on your mod’s theme.</p>
+
+    <h2>Creating a Custom Enchantment</h2>
+
+    <h3>1. Define the Enchantment</h3>
+    <p>We will start by defining a custom enchantment. A basic enchantment includes specifying the name, rarity, and the effect it has when applied to an item. In this example, we’ll create an enchantment that increases the attack damage of a weapon.</p>
+
+    <pre><code>package com.example.mymod.enchantments;
+
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+public class CustomEnchantments {
+
+    public static final Enchantment ATTACK_BOOST = new Enchantment(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
+
+        @Override
+        public int getMaxLevel() {
+            return 3; // Max level for the enchantment
+        }
+
+        @Override
+        public int getMinPower(int level) {
+            return 5 + (level - 1) * 10; // Power to unlock the enchantment
+        }
+
+        @Override
+        public int getMaxPower(int level) {
+            return this.getMinPower(level) + 15; // Power scaling based on level
+        }
+
+        @Override
+        public Text getName(int level) {
+            return Text.translatable("enchantment.mymod.attack_boost", level);
+        }
+    };
+
+    // Register the custom enchantment
+    public static void register() {
+        Registry.register(Registry.ENCHANTMENT, new Identifier("mymod", "attack_boost"), ATTACK_BOOST);
+    }
+}
+    </code></pre>
+    <p>In this code:</p>
+    <ul>
+        <li><code>ATTACK_BOOST</code> is the custom enchantment. It targets weapons and applies to the main hand equipment slot.</li>
+        <li><code>getMaxLevel()</code> sets the maximum level of the enchantment (in this case, level 3).</li>
+        <li><code>getMinPower(int level)</code> and <code>getMaxPower(int level)</code> define how much enchantment power is needed at each level.</li>
+        <li><code>getName(int level)</code> sets the name of the enchantment, which will be displayed in-game.</li>
+    </ul>
+
+    <h3>2. Register the Enchantment</h3>
+    <p>As with custom items, the enchantment must be registered in your mod's <code>onInitialize()</code> method:</p>
+    <pre><code>public class MyMod implements ModInitializer {
+
+    @Override
+    public void onInitialize() {
+        // Register the custom enchantment
+        CustomEnchantments.register();
+        System.out.println("Custom Enchantment Registered!");
+    }
+}
+    </code></pre>
+
+    <h2>Applying the Custom Enchantment to Items</h2>
+
+    <h3>1. Adding Enchantment to a Custom Item</h3>
+    <p>Now that we have created our custom enchantment, let’s apply it to a custom item, such as a sword. To do this, we use an enchantment method that applies the enchantment when the item is created or when it is obtained by the player.</p>
+
+    <pre><code>package com.example.mymod.items;
+
+import com.example.mymod.enchantments.CustomEnchantments;
+import net.minecraft.item.Item;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.enchantment.EnchantmentHelper;
+
+public class CustomSwordItem extends SwordItem {
+
+    public CustomSwordItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+        super(material, attackDamage, attackSpeed, settings);
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, net.minecraft.client.font.TextRenderer context, java.util.List<net.minecraft.text.Text> tooltip, net.minecraft.client.util.math.MatrixStack matrices) {
+        super.appendTooltip(stack, context, tooltip, matrices);
+        
+        // Check if the sword has the custom enchantment and display the bonus damage
+        if (EnchantmentHelper.getLevel(CustomEnchantments.ATTACK_BOOST, stack) > 0) {
+            tooltip.add(net.minecraft.text.Text.translatable("tooltip.mymod.attack_boost"));
+        }
+    }
+
+    // Register the custom sword
+    public static final Item CUSTOM_SWORD = new CustomSwordItem(CustomToolMaterials.CUSTOM_MATERIAL, 8, -2.4f, new Item.Settings().group(ItemGroup.COMBAT));
+
+    // Register the item
+    public static void register() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_sword"), CUSTOM_SWORD);
+    }
+}
+    </code></pre>
+    <p>In this example:</p>
+    <ul>
+        <li>We use <code>EnchantmentHelper.getLevel()</code> to check if the custom enchantment is applied to the item, and display a tooltip with the bonus damage.</li>
+        <li>The enchantment is applied when the sword is crafted or enchanted in an anvil or enchanting table.</li>
+    </ul>
+
+    <h2>Creating Special Effects</h2>
+
+    <h3>1. Defining the Effect</h3>
+    <p>In addition to applying enchantments, you may want to add custom effects that trigger during gameplay. For example, let’s create a custom effect that triggers when the player uses the weapon, granting a temporary strength boost.</p>
+
+    <pre><code>package com.example.mymod.effects;
+
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
+
+public class StrengthBoostEffect extends StatusEffect {
+
+    public StrengthBoostEffect() {
+        super(StatusEffectCategory.BENEFICIAL, 0xFF0000); // Red color
+    }
+
+    @Override
+    public void applyUpdateEffect(PlayerEntity player, int amplifier) {
+        if (!player.world.isClient) {
+            player.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(net.minecraft.entity.effect.StatusEffects.STRENGTH, 200, amplifier));
+        }
+    }
+
+    @Override
+    public boolean isInstant() {
+        return true; // Instant effect
+    }
+}
+    </code></pre>
+
+    <p>This custom effect:</p>
+    <ul>
+        <li>Applies a temporary strength boost to the player when triggered.</li>
+        <li>Uses the <code>StatusEffectCategory.BENEFICIAL</code> to indicate that the effect benefits the player.</li>
+        <li>Uses <code>applyUpdateEffect</code> to apply the effect when the player is affected by the status.</li>
+    </ul>
+
+    <h3>2. Triggering the Effect</h3>
+    <p>To trigger this effect, we can modify our custom sword to apply it when the player uses it. Here's the code to apply the custom effect when the player right-clicks the sword:</p>
+
+    <pre><code>package com.example.mymod.items;
+
+import com.example.mymod.effects.StrengthBoostEffect;
+import net.minecraft.item.Item;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.entity.player.PlayerEntity;
+
+public class CustomSwordItem extends SwordItem {
+
+    public CustomSwordItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+        super(material, attackDamage, attackSpeed, settings);
+    }
+
+    @Override
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity player, World world, Hand hand) {
+        if (!world.isClient) {
+            player.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(new StrengthBoostEffect(), 200, 1));
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    // Register the custom sword
+    public static final Item CUSTOM_SWORD = new CustomSwordItem(CustomToolMaterials.CUSTOM_MATERIAL, 8, -2.4f, new Item.Settings().group(ItemGroup.COMBAT));
+
+    // Register the item
+    public static void register() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_sword"), CUSTOM_SWORD);
+    }
+}
+    </code></pre>
+
+    <h2>Next Steps</h2>
+    <p>Now that you know how to create and apply custom enchantments and effects, you can further enhance your mod by combining multiple enchantments, creating new effects, or designing items with special abilities. In the next section, we’ll cover custom crafting recipes and item interactions to make your mod even more dynamic and immersive!</p>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Modding 1.20.1 - Creating a Custom Item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Modding 1.20.1 - Creating a Custom Item</h1>
+    
+    <h2>Introduction</h2>
+    <p>In this section, we will cover how to create a custom item in Minecraft for modding. We will guide you through creating a basic item, adding it to the game, and providing it with custom functionality.</p>
+
+    <h2>Creating the Custom Item</h2>
+
+    <h3>1. Define the Item Class</h3>
+    <p>Start by creating a new Java class for your item. This will define the behavior of the item when it is used in the game.</p>
+    <pre><code>package com.example.mymod.items;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+
+public class CustomItem extends Item {
+    public CustomItem() {
+        super(new Item.Settings().group(ItemGroup.MISC)); // Adds item to Misc tab in inventory
+    }
+}
+    </code></pre>
+    <p>In this code, we create a new item class called <code>CustomItem</code>. The <code>ItemGroup.MISC</code> places it under the "Misc" category in the inventory. You can modify this to place the item in a different category.</p>
+
+    <h3>2. Register the Custom Item</h3>
+    <p>Next, you need to register your item so that Minecraft knows about it. This is done in the main mod class. Add the following code to register your custom item.</p>
+    <pre><code>package com.example.mymod;
+
+import com.example.mymod.items.CustomItem;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.fabricmc.api.ModInitializer;
+
+public class MyMod implements ModInitializer {
+    public static final Item CUSTOM_ITEM = new CustomItem();
+
+    @Override
+    public void onInitialize() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_item"), CUSTOM_ITEM);
+    }
+}
+    </code></pre>
+    <p>In this example, we register the custom item under the namespace "mymod" with the identifier "custom_item". You can change "mymod" to the name of your mod and "custom_item" to the name of your item.</p>
+
+    <h3>3. Add an Item Texture</h3>
+    <p>Now, let's add a texture for the item. First, place your texture image in the <code>src/main/resources/assets/mymod/textures/items/</code> folder.</p>
+    <p>The texture file should be named <code>custom_item.png</code>, or whatever you specified when registering the item. Here’s how to add the texture to the game:</p>
+    <pre><code>src/main/resources/assets/mymod/textures/items/custom_item.png
+    </code></pre>
+
+    <h3>4. Testing the Custom Item</h3>
+    <p>Now that everything is set up, you can run your mod to test the custom item in Minecraft.</p>
+    <pre><code>./gradlew runClient</code></pre>
+    <p>Once Minecraft starts, open the inventory, and you should see your custom item under the "Misc" category. You can also add it to your player’s inventory using commands like:</p>
+    <pre><code>/give @p mymod:custom_item 1</code></pre>
+
+    <h2>Next Steps</h2>
+    <p>Now that you’ve created a basic custom item, you can move forward and add additional features like crafting recipes, custom effects, or interaction events. In the next section, we will explore adding advanced functionality to your custom items!</p>
+</body>
+</html>

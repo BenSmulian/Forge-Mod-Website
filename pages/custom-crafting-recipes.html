@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Crafting Recipes - Minecraft Modding 1.20.1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Crafting Recipes - Minecraft Modding 1.20.1</h1>
+    <h2>Introduction</h2>
+    <p>In this section, we will learn how to add custom crafting recipes for the items and blocks we've created in earlier sections. This allows players to craft your custom items within the game.</p>
+
+    <h2>Creating a Crafting Recipe</h2>
+    <p>To create a custom crafting recipe, we need to register it using the appropriate registry.</p>
+    
+    <h3>1. Define the Crafting Recipe</h3>
+    <pre><code>
+    public class ModRecipes {
+        public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = 
+            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Mod.MODID);
+
+        public static final RegistryObject<RecipeSerializer<?>> CUSTOM_RECIPE = RECIPE_SERIALIZERS.register("custom_recipe", 
+            () -> new ShapedRecipeSerializer<>(new CustomRecipe()));
+    }
+    </code></pre>
+    
+    <h3>2. Register the Recipe in the Game</h3>
+    <pre><code>
+    public class CustomRecipe implements Recipe<Inventory> {
+        // Define crafting pattern here
+        @Override
+        public boolean matches(Inventory pContainer, Level pLevel) {
+            return pContainer.getItem(0).getItem() == ModItems.CUSTOM_ITEM.get();
+        }
+    }
+    </code></pre>
+
+    <h2>Conclusion</h2>
+    <p>This section covered creating custom crafting recipes. Players can now craft your custom items using defined patterns. In the next section, we will cover more complex mechanics like custom crafting stations.</p>
+</body>
+</html>

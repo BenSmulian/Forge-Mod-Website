@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Modding 1.20.1 - Creating a Custom Block</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Modding 1.20.1 - Creating a Custom Block</h1>
+
+    <h2>Introduction</h2>
+    <p>In this section, we will walk through how to create a custom block in Minecraft for modding. Custom blocks can add interesting gameplay mechanics or simply make your mod more immersive. We will cover defining the block, registering it, adding a texture, and providing basic interactions like block breaking and placement.</p>
+
+    <h2>Creating the Custom Block</h2>
+
+    <h3>1. Define the Block Class</h3>
+    <p>Start by creating a new Java class that will define your custom block. The block class extends <code>Block</code> and includes the basic properties of the block, such as its material, hardness, and resistance to explosions.</p>
+    <pre><code>package com.example.mymod.blocks;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+
+public class CustomBlock extends Block {
+    public CustomBlock() {
+        super(Settings.of(Material.STONE).strength(3.0f, 3.0f)); // Block material and strength
+    }
+
+    @Override
+    public boolean isFullBlock(BlockState state) {
+        return true; // Custom behavior for block shape
+    }
+
+    @Override
+    public boolean canSustainPlant(BlockState state, BlockView world, BlockPos pos, net.minecraft.util.math.Direction direction, net.minecraft.world.gen.feature.ConfiguredFeature<?, ?> feature) {
+        return false; // Custom behavior for plant interaction
+    }
+}
+    </code></pre>
+    <p>This basic custom block extends the <code>Block</code> class, sets its material to stone, and defines its hardness and resistance to explosions. You can customize this further by adding more functionality.</p>
+
+    <h3>2. Register the Custom Block</h3>
+    <p>Next, you need to register your custom block. Just like with custom items, Minecraft needs to be aware of the new block. Register it in your mod's main class.</p>
+    <pre><code>package com.example.mymod;
+
+import com.example.mymod.blocks.CustomBlock;
+import net.minecraft.block.Block;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.fabricmc.api.ModInitializer;
+
+public class MyMod implements ModInitializer {
+    public static final Block CUSTOM_BLOCK = new CustomBlock();
+
+    @Override
+    public void onInitialize() {
+        Registry.register(Registry.BLOCK, new Identifier("mymod", "custom_block"), CUSTOM_BLOCK);
+    }
+}
+    </code></pre>
+    <p>In this example, we register the custom block under the namespace "mymod" with the identifier "custom_block". Again, you can change these to reflect your mod and block names.</p>
+
+    <h3>3. Add a Block Texture</h3>
+    <p>Now, let’s add a texture for our custom block. Create a texture file and place it in the following directory: <code>src/main/resources/assets/mymod/textures/block/</code>. The texture should be named <code>custom_block.png</code>.</p>
+    <pre><code>src/main/resources/assets/mymod/textures/block/custom_block.png
+    </code></pre>
+    <p>This will display the texture for your custom block in the game. You can design it as you like using any image editor.</p>
+
+    <h3>4. Creating the Block Item</h3>
+    <p>When a block is placed in the world, players can interact with it, but it also needs to be added to the player's inventory. Let’s create an item for our block so it can be picked up and placed by the player.</p>
+    <pre><code>package com.example.mymod.items;
+
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.block.Block;
+
+public class CustomBlockItem extends BlockItem {
+    public CustomBlockItem(Block block) {
+        super(block, new Item.Settings().group(ItemGroup.BUILDING_BLOCKS)); // Adds to building blocks tab
+    }
+}
+
+// Register the item
+public class MyMod implements ModInitializer {
+    public static final Block CUSTOM_BLOCK = new CustomBlock();
+    public static final Item CUSTOM_BLOCK_ITEM = new CustomBlockItem(CUSTOM_BLOCK);
+
+    @Override
+    public void onInitialize() {
+        Registry.register(Registry.ITEM, new Identifier("mymod", "custom_block_item"), CUSTOM_BLOCK_ITEM);
+    }
+}
+    </code></pre>
+    <p>This code creates a new <code>BlockItem</code> for our custom block and adds it to the "Building Blocks" inventory tab. Now players can pick up and place the custom block.</p>
+
+    <h3>5. Testing the Custom Block</h3>
+    <p>Once everything is set up, you can run your mod and test your custom block. To do this, use the following command to add it to your inventory:</p>
+    <pre><code>/give @p mymod:custom_block_item 1</code></pre>
+    <p>Place the custom block in the world and interact with it. You should see your custom block in the game with the texture and behavior you defined.</p>
+
+    <h2>Next Steps</h2>
+    <p>Now that you’ve created a basic custom block, you can enhance it further by adding more features like redstone interaction, block breaking effects, or custom sounds. In the next section, we will look into creating a custom crafting recipe for your custom block!</p>
+</body>
+</html>

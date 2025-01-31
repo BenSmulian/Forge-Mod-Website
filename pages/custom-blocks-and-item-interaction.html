@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Blocks and Item Interactions - Minecraft Modding 1.20.1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Blocks and Item Interactions - Minecraft Modding 1.20.1</h1>
+    <h2>Introduction</h2>
+    <p>In this section, we will create a custom block and make it interact with items. This will include making a block that performs an action when right-clicked or interacted with in specific ways.</p>
+
+    <h2>Creating a Custom Block</h2>
+    <p>To start, we will define a new block class and register it with Minecraft's block registry.</p>
+    
+    <h3>1. Define the Custom Block</h3>
+    <pre><code>
+    public class CustomBlock extends Block {
+        public CustomBlock(AbstractBlock.Properties properties) {
+            super(properties);
+        }
+    }
+    </code></pre>
+    
+    <h3>2. Register the Custom Block</h3>
+    <pre><code>
+    public class ModBlocks {
+        public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Mod.MODID);
+        public static final RegistryObject<Block> CUSTOM_BLOCK = BLOCKS.register("custom_block", 
+            () -> new CustomBlock(AbstractBlock.Properties.of(Material.STONE)));
+    }
+    </code></pre>
+
+    <h2>Making the Block Interact with Items</h2>
+    <p>Next, we'll implement item interaction by detecting right-clicks or other interactions.</p>
+    
+    <h3>3. Handling Item Interactions</h3>
+    <pre><code>
+    public class CustomBlockEntity extends BlockEntity {
+        public CustomBlockEntity(BlockPos pos, BlockState state) {
+            super(ModBlockEntities.CUSTOM_BLOCK_ENTITY.get(), pos, state);
+        }
+
+        public void onBlockClicked(ItemStack itemStack) {
+            // Handle item interaction logic here
+        }
+    }
+    </code></pre>
+
+    <h2>Conclusion</h2>
+    <p>This section covered adding a custom block and setting up basic item interactions. In the next part, we will look at advanced custom item creation and how to use these blocks within your mod.</p>
+</body>
+</html>
