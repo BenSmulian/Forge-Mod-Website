@@ -1,4 +1,4 @@
-document.querySelector('nav').addEventListener('scroll', function() {
+document.querySelector('nav').addEventListener('scroll', function () {
     if (window.scrollY > 100) {
         this.style.background = 'rgba(255, 255, 255, 0.95)';
         this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
@@ -10,7 +10,7 @@ document.querySelector('nav').addEventListener('scroll', function() {
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
         document.querySelector(this.getAttribute('href')).scrollIntoView({
             behavior: 'smooth'
@@ -19,18 +19,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Handle search functionality (you'll need to add your own logic here)
-document.querySelector('.search-container input').addEventListener('input', function() {
+document.querySelector('.search-container input').addEventListener('input', function () {
     // This is where you would typically implement the search logic
     console.log(`Search term: ${this.value}`);
 });
 
-document.querySelector('.search-container button').addEventListener('click', function() {
+document.querySelector('.search-container button').addEventListener('click', function () {
     // This is where you would typically handle the search action
     console.log(`Performing search with terms: ${document.querySelector('.search-container input').value}`);
 });
 
 // Basic JavaScript functionality for search and navigation
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const pageCardsContainer = document.getElementById('pageCards');
     const contentContainer = document.getElementById('contentContainer');
     const searchInput = document.querySelector('.search-container input');
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle search input
-    searchInput.addEventListener('input', function(e) {
+    searchInput.addEventListener('input', function (e) {
         const searchTerm = e.target.value.trim().toLowerCase();
         const cards = document.querySelectorAll('.page-card');
         cards.forEach(card => {
@@ -91,6 +91,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+     // Get the footer and the close button
+     const footer = document.querySelector('.footer');
+     const closeButton = document.querySelector('.close-btn');
+
+     // Add an event listener to the close button
+     closeButton.addEventListener('click', () => {
+         footer.classList.add('closed'); // Add the 'closed' class to start animation
+     });
+    
     // Initial load of page cards
     loadPageCards();
 });
@@ -100,39 +109,40 @@ const searchInput = document.querySelector('.search-container input');
 const contentContainer = document.getElementById('contentContainer');
 
 // Add an event listener to the search input
-searchInput.addEventListener('input', function(e) {
-  const searchTerm = e.target.value.trim();
-  if (searchTerm !== '') {
-    // Filter the content based on the search term
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => {
-      const pageContent = page.innerHTML;
-      if (pageContent.includes(searchTerm)) {
-        page.style.display = 'block';
-      } else {
-        page.style.display = 'none';
-      }
-    });
-  } else {
-    // Show all pages when the search input is empty
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => {
-      page.style.display = 'block';
-    });
-  }
+searchInput.addEventListener('input', function (e) {
+    const searchTerm = e.target.value.trim();
+    if (searchTerm !== '') {
+        // Filter the content based on the search term
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => {
+            const pageContent = page.innerHTML;
+            if (pageContent.includes(searchTerm)) {
+                page.style.display = 'block';
+            } else {
+                page.style.display = 'none';
+            }
+        });
+    } else {
+        // Show all pages when the search input is empty
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => {
+            page.style.display = 'block';
+        });
+    }
 });
 
 function loadPage(page) {
     const filePath = `pages/${page}.html`;
     fetch(`http://localhost:8080/${filePath}`)
-      .then(response => response.text())
-      .then(html => {
-        contentContainer.innerHTML = html;
-        // Add the page class to the loaded content
-        const pageElement = contentContainer.querySelector('.container');
-        pageElement.classList.add('page');
-      })
-      .catch(error => {
-        console.error('Error loading page:', error);
-      });
-  }
+        .then(response => response.text())
+        .then(html => {
+            contentContainer.innerHTML = html;
+            // Add the page class to the loaded content
+            const pageElement = contentContainer.querySelector('.container');
+            pageElement.classList.add('page');
+        })
+        .catch(error => {
+            console.error('Error loading page:', error);
+        });
+}
+
